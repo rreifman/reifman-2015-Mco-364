@@ -7,21 +7,30 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 
 public class SnakeFrame extends JFrame implements KeyListener {
 
 	public SnakeFrame() {
-		setSize(800, 800);
+		setSize(630, 630);
 		setTitle("Snake");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+		setFocusable(true);
+		
 		Container pane = getContentPane();
 		pane.setLayout(new BorderLayout());
-		pane.setBackground(Color.GREEN);
-		
-		SnakeComponent snake = new SnakeComponent();
+		pane.setBackground(Color.GRAY);
+	
+
+		WorldComponent snake = new WorldComponent();
+		//GameLoopThread game = new GameLoopThread(snake);
 		snake.addKeyListener(this);
 		snake.setFocusable(true);
+		pane.add(snake);
 	}
 
 	@Override
