@@ -51,19 +51,19 @@ public class ChatClient extends JFrame implements ReaderListener {
 
 				@Override
 				public void keyTyped(KeyEvent e) {
-					if (e.getKeyChar() == KeyEvent.VK_ENTER) {
+					//if (e.getKeyChar() == KeyEvent.VK_ENTER) {
 
-						postMessage();
-					}
+						//postMessage();
+					//}
 
 				}
 
 				@Override
 				public void keyReleased(KeyEvent e) {
-					if (e.getKeyChar() == KeyEvent.VK_ENTER) {
+					//if (e.getKeyChar() == KeyEvent.VK_ENTER) {
 
-						postMessage();
-					}
+						//postMessage();
+					//}
 				}
 			});
 
@@ -82,16 +82,16 @@ public class ChatClient extends JFrame implements ReaderListener {
 		String line = text.getText();
 		writer.println(line);
 		writer.println();
-		writer.flush();
+
 		text.setText("");
 		onLineRead(line);
+		writer.flush();
 
 	}
 
 	@Override
 	public void onLineRead(String line) {
 		convo.append(line);
-		
 	}
 
 	@Override
