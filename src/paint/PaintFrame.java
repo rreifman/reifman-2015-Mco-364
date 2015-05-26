@@ -18,16 +18,24 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JSlider;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 public class PaintFrame extends JFrame {
 
-	private JPanel colorPanel;
+	private JPanel bottomPanel;
 	private Color color;
-	DrawListener pencil;
-	DrawRectangle rectangle;
+	private BrushListener pencil;
+	private BrushListener rectangle;
 	private JPanel tools;
-	Cursor cursor;
-	Toolkit toolkit;
+	private Cursor cursor;
+	private Toolkit toolkit;
+	private ModeButton pencilButton;
+	private ModeButton RectangleButton;
+	private Canvas canvas;
+	private JSlider brushWidthSlider;
+	private BrushListener currentListener;
 
 	public PaintFrame() {
 
@@ -36,44 +44,53 @@ public class PaintFrame extends JFrame {
 		setBackground(Color.LIGHT_GRAY);
 
 		setLayout(new BorderLayout());
-		Canvas canvas = new Canvas(600, 600);
+		canvas = new Canvas(600, 600);
 		add(canvas, BorderLayout.CENTER);
 
-		pencil = new DrawListener(canvas);
-		addMouseListener(pencil);
-		addMouseMotionListener(pencil);
+		pencil = new PencilListener(canvas);
+		currentListener = pencil;
+		canvas.setBrushListener(pencil);
+		//canvas.addMouseListener(pencil);
+		//canvas.addMouseMotionListener(pencil);
 
-		colorPanel = new JPanel();
+		bottomPanel = new JPanel();
+		brushWidthSlider = new JSlider(1, 20);
+		
+		brushWidthSlider.setOrientation(JSlider.HORIZONTAL);
+		brushWidthSlider.addChangeListener(brushSliderListener);
+
 		colorButtons();
-		add(colorPanel, BorderLayout.SOUTH);
+		bottomPanel.add(brushWidthSlider);
+		add(bottomPanel, BorderLayout.SOUTH);
 
 		tools = new JPanel();
 		tools.setBackground(Color.GRAY);
 		tools.setLayout(new BoxLayout(tools, BoxLayout.PAGE_AXIS));
 		add(tools, BorderLayout.EAST);
-
-		JButton rectangleTool = addButtonToTools("DrawRectangle.png");
-		rectangleTool.addActionListener(drawRectangle);
 		
-		JButton pencilTool = addButtonToTools("pencilCursor.png");
+		rectangle = new RectangleListener(canvas);
+
+		ModeButton rectangleTool = new ModeButton(rectangle, "DrawRectangle.png");
+		rectangleTool.addActionListener(draw);
+		
+		ModeButton pencilTool = new ModeButton(pencil, "pencilCursor.png");
 		pencilTool.addActionListener(draw);
 
 		tools.add(rectangleTool);
 		tools.add(pencilTool);
 
-		rectangle = new DrawRectangle(canvas);
-		
+
 		toolkit = Toolkit.getDefaultToolkit();
 		
-		Image pencil = toolkit.getImage("pencilCursor.png");
-		cursor = toolkit.createCustomCursor(pencil, new Point(getX(),
+		Image pencilIcon = toolkit.getImage("pencilCursor.png");
+		cursor = toolkit.createCustomCursor(pencilIcon, new Point(getX(),
 				getY()), "img");
 		setCursor(cursor);
 
 	}
 
 	private void colorButtons() {
-		colorPanel.setLayout(new FlowLayout());
+		bottomPanel.setLayout(new FlowLayout());
 
 		List<ColorButton> colorButtons = new ArrayList<ColorButton>();
 
@@ -88,21 +105,21 @@ public class PaintFrame extends JFrame {
 		colorButtons.add(new ColorButton(Color.GRAY));
 
 		for (ColorButton x : colorButtons) {
-			colorPanel.add(x);
+			bottomPanel.add(x);
 			x.addActionListener(buttonPressed);
 		}
 
 	}
 	
-	public JButton addButtonToTools(String imageName){
-		JButton tool = new JButton();
-		ImageIcon image = new ImageIcon(imageName);
-		tool.setSize(new Dimension(60, 60));
-		tool.setOpaque(true);
-		tool.setIcon(image);
-		tool.setVisible(true);
-		return tool;
-	}
+//	public ModeButton addButtonToTools(BrushListener listener, String imageName){
+//		ModeButton tool = new ModeButton(listener, imageName);
+//		ImageIcon image = new ImageIcon(imageName);
+//		tool.setSize(new Dimension(60, 60));
+//		tool.setOpaque(true);
+//		tool.setIcon(image);
+//		tool.setVisible(true);
+//		return tool;
+//	}
 
 
 	ActionListener buttonPressed = new ActionListener() {
@@ -111,8 +128,8 @@ public class PaintFrame extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			ColorButton button = (ColorButton) e.getSource();
 
-			pencil.changeColor(button.getColor());
-			rectangle.changeColor(button.getColor());
+			currentListener.changeColor(button.getColor());
+			//rectangle.changeColor(button.getColor());
 		}
 
 	};
@@ -121,13 +138,15 @@ public class PaintFrame extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			removeMouseListener(rectangle);
-			removeMouseMotionListener(rectangle);
-			addMouseListener(pencil);
-			addMouseMotionListener(pencil);
+			ModeButton button = (ModeButton) e.getSource();
+			BrushListener listener = button.getListener();
+			canvas.setBrushListener(listener);
+			currentListener = listener;
+			//canvas.addMouseListener(listener);
+			//canvas.addMouseMotionListener(listener);
 
 			
-			Image image = toolkit.getImage("pencilCursor.png");
+			Image image = toolkit.getImage(button.getImageName());
 			cursor = toolkit.createCustomCursor(image, new Point(getX(),
 					getY()), "img");
 			setCursor(cursor);
@@ -135,24 +154,14 @@ public class PaintFrame extends JFrame {
 		}
 
 	};
-
-	ActionListener drawRectangle = new ActionListener() {
+	
+	ChangeListener brushSliderListener = new ChangeListener() {
 
 		@Override
-		public void actionPerformed(ActionEvent e) {
-			removeMouseListener(pencil);
-			removeMouseMotionListener(pencil);
-			addMouseListener(rectangle);
-			addMouseMotionListener(rectangle);
-
+		public void stateChanged(ChangeEvent e) {
+			currentListener.changeWidth(brushWidthSlider.getValue());
 			
-			Image image = toolkit.getImage("rectangleCursor.png");
-			cursor = toolkit.createCustomCursor(image, new Point(getX(),
-					getY()), "img");
-			setCursor(cursor);
-
 		}
-
 	};
 
 	
