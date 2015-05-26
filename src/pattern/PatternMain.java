@@ -20,7 +20,7 @@ public class PatternMain {
 			System.out.println(number);
 		}
 		
-		Pattern email = Pattern.compile("(.+)@(.+).\\d{3}");
+		Pattern email = Pattern.compile("(.+)@(.+)\\.\\d{3}");
 		String t = "rivkareifman@gmail.com";
 		Matcher m2 = email.matcher(t);
 		boolean b2 = m2.matches();
