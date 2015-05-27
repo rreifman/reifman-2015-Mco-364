@@ -2,12 +2,8 @@ package paint;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Point;
-import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -19,8 +15,8 @@ public abstract class BrushListener implements MouseListener, MouseMotionListene
 	protected int startY;
 	protected int lastX;
 	protected int lastY;
-	private Color color;
-	private int width;
+	protected Color color;
+	protected int width;
 	
 	public BrushListener(Canvas canvas){
 		this.canvas = canvas;
@@ -33,9 +29,9 @@ public abstract class BrushListener implements MouseListener, MouseMotionListene
 		lastX = e.getX();
 		lastY = e.getY();
 		
-		Graphics g = canvas.getG();
-		g.setColor(color);
-		draw(g);
+		//Graphics g = canvas.getG();
+		//g.setColor(color);
+		//draw(g);
 		
 		canvas.repaint();
 		
@@ -64,7 +60,7 @@ public abstract class BrushListener implements MouseListener, MouseMotionListene
 	public void mouseReleased(MouseEvent e) {
 		
 		Graphics2D g = (Graphics2D) canvas.getImage().getGraphics();
-		g.setColor(color);
+		//g.setColor(color);
 		g.setStroke(new BasicStroke(width));
 		draw(g);
 		canvas.repaint();
@@ -92,5 +88,6 @@ public abstract class BrushListener implements MouseListener, MouseMotionListene
 
 	public abstract void draw(Graphics g);
 
+	public abstract void drawPreview(Graphics g);
 
 }

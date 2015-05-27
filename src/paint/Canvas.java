@@ -30,7 +30,7 @@ public class Canvas extends JPanel{
 		
 		g.drawImage(image, 0, 0, null);
 		
-		listener.draw(g);
+		listener.drawPreview(g);
 		
 	}
 	

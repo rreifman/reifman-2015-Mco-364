@@ -1,10 +1,10 @@
 package paint;
 
-import java.awt.Color;
+import java.awt.BasicStroke;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
+
 
 public class RectangleListener extends BrushListener{
 	
@@ -17,7 +17,10 @@ public class RectangleListener extends BrushListener{
 
 	@Override
 	public void draw(Graphics g) {
-		g.drawRect(startX, startY, lastX - startX, lastY - startY);		
+		Graphics2D g2 = (Graphics2D) g;
+		g2.setColor(color);
+		g2.setStroke(new BasicStroke(width));
+		g2.drawRect(startX, startY, lastX - startX, lastY - startY);		
 	}
 //	
 //	private Canvas canvas;
@@ -30,69 +33,28 @@ public class RectangleListener extends BrushListener{
 //		color = Color.BLACK;
 //	}
 //	
-	@Override
-	public void mouseDragged(MouseEvent event) {
-		
-		//Graphics graphics = canvas.getImage().getGraphics();
-		//graphics.setColor(color);
-		int x = event.getX();
-		int y = event.getY();
-		
-		Graphics graphics = canvas.getImage().getGraphics();
-		//graphics.setColor(color);
-		graphics.drawRect(lastX, lastY, x-lastX, y-lastY);
-		
-		lastX = x;
-		lastY = y;
-		
-		canvas.repaint();
-	}
-//		
-//
-//		
-	//}
 //	@Override
-//	public void mouseMoved(MouseEvent event) {
+//	public void mouseDragged(MouseEvent event) {
 //		
-//		
-//	}
-//	@Override
-//	public void mouseClicked(MouseEvent e) {
-//		lastX = e.getX();
-//		lastY = e.getY();
-//		
-//	}
-//	@Override
-//	public void mousePressed(MouseEvent e) {
-//		lastX = e.getX();
-//		lastY = e.getY();
-//	}
-//	
-//	@Override
-//	public void mouseReleased(MouseEvent event) {
+//		//Graphics graphics = canvas.getImage().getGraphics();
+//		//graphics.setColor(color);
 //		int x = event.getX();
 //		int y = event.getY();
 //		
 //		Graphics graphics = canvas.getImage().getGraphics();
-//		graphics.setColor(color);
+//		//graphics.setColor(color);
 //		graphics.drawRect(lastX, lastY, x-lastX, y-lastY);
-//			
+//		
+//		lastX = x;
+//		lastY = y;
+//		
 //		canvas.repaint();
-//		
 //	}
-//	@Override
-//	public void mouseEntered(MouseEvent e) {
-//		// TODO Auto-generated method stub
-//		
-//	}
-//	@Override
-//	public void mouseExited(MouseEvent e) {
-//		// TODO Auto-generated method stub
-//		
-//	}
-//	
-//	public void changeColor(Color color){
-//		this.color = color;
-//	}
+
+
+	@Override
+	public void drawPreview(Graphics g) {
+		draw(g);		
+	}
 
 }

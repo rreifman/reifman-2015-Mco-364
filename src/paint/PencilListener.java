@@ -1,6 +1,8 @@
 package paint;
 
+import java.awt.BasicStroke;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 
 
@@ -16,8 +18,12 @@ public class PencilListener extends BrushListener{
 	
 	@Override
 	public void draw(Graphics g) {
-		g.drawLine(startX, startY, lastX, lastY);
-		
+		Graphics2D g2 = (Graphics2D) g;
+		g2.setColor(color);
+		g2.setStroke(new BasicStroke(width));
+		g2.drawLine(startX, startY, lastX, lastY);
+		startX = lastX;
+		startY = lastY;
 	}
 
 //	private Canvas canvas;
@@ -30,21 +36,7 @@ public class PencilListener extends BrushListener{
 //		color = Color.BLACK;
 //	}
 //	
-	@Override
-	public void mouseDragged(MouseEvent event) {
-		
-		int x = event.getX();
-		int y = event.getY();
-		
-		Graphics graphics = canvas.getImage().getGraphics();
-		//graphics.setColor(color);
-		graphics.drawLine(lastX, lastY, x, y);
-		
-		lastX = x;
-		lastY = y;
-		
-		canvas.repaint();
-	}
+
 //
 //	@Override
 //	public void mouseMoved(MouseEvent e) {
@@ -94,5 +86,16 @@ public class PencilListener extends BrushListener{
 //	public void changeColor(Color color){
 //		this.color = color;
 //	}
+
+	@Override
+	public void drawPreview(Graphics g) {
+		// TODO Auto-generated method stub
+		Graphics2D g2 = (Graphics2D) canvas.getImage().getGraphics();
+		g2.setColor(color);
+		g2.setStroke(new BasicStroke(width));
+		g2.drawLine(startX, startY, lastX, lastY);
+		startX = lastX;
+		startY = lastY;
+	}
 
 }
